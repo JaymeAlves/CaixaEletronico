@@ -1,4 +1,6 @@
-﻿using CaixaEletronico.Domain.Models;
+﻿using CaixaEletronico.Domain.Operacoes;
+using CaixaEletronico.Service;
+using CaixaEletronico.Views;
 using System;
 
 namespace CaixaEletronico
@@ -7,28 +9,62 @@ namespace CaixaEletronico
     {
         static void Main(string[] args)
         {
-            Notas notas10 = new Notas();
-            Notas notas20 = new Notas();
-            Notas notas50 = new Notas();
+            //Instacia classes
+            InterfaceCaixa interfaceCaixa = new InterfaceCaixa();
 
-            Console.WriteLine("*** Caixa Eletronico! ***\n");
+            ServicoGerenciadorDeCaixa servicoGerenciadorDeCaixa = new ServicoGerenciadorDeCaixa();
+
+            Caixa caixa = new Caixa();
+
+            Notas notas10 = new Notas(10,1);
+            Notas notas20 = new Notas(20,1);
+            Notas notas50 = new Notas(50,1);
+
+            caixa.AdicionarNovoValorNotas(notas10);
+            caixa.AdicionarNovoValorNotas(notas20);
+            caixa.AdicionarNovoValorNotas(notas50);
 
             string opcoes = "";
 
-            while(opcoes != "6")
+            //Início da funcionalidade do caixa
+            while (opcoes != "4")
             {
-                Console.WriteLine("\n1. Carregar notas de 10 reais");
-                Console.WriteLine("2. Carregar notas de 20 reais");
-                Console.WriteLine("3. Carregar notas de 50 reais");
-                Console.WriteLine("4. Saque");
-                Console.WriteLine("5. Relatório");
-                Console.WriteLine("6. Sair");
+                interfaceCaixa.CarregaOpcoes();
 
                 opcoes = Console.ReadLine();
 
-                //switch
+                switch (opcoes)
+                {
+                    //Adicionar notas
+                    case "1":
+                        interfaceCaixa.SolicitarValorNotas();
+
+                        string valorNota = Console.ReadLine();
+
+                        interfaceCaixa.SolicitarNotas();
+
+                        int quantidadeNota = Convert.ToInt32(Console.ReadLine());
+
+                        servicoGerenciadorDeCaixa.InserirNotas(caixa, valorNota, quantidadeNota);
+                        break;
+
+                    //Relatório
+                    case "2":
+                        interfaceCaixa.SolicitaQuantidadeSaque();
+
+                        int quantidadeSaque = Convert.ToInt32(Console.ReadLine());
+
+                        servicoGerenciadorDeCaixa.Sacar(caixa, quantidadeSaque);
+                        break;
+
+                    case "3":
+                        interfaceCaixa.ExibeRelatorio(caixa);
+                        break;
+
+                    case "4":
+                        break;
+                }
             }
-            
         }
     }
 }
